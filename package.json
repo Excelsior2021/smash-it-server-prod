@@ -1,0 +1,29 @@
+{
+  "name": "smash-it",
+  "version": "1.0.0",
+  "description": "Server for Smash It! A performance tracking app for table tennis.",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "mysql": "mysql -h localhost -u root -p",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback",
+    "make-migration": "knex migrate:make",
+    "migrate-down": "knex migrate:down",
+    "make-seed": "knex seed:make",
+    "seed": "knex seed:run"
+  },
+  "author": "Jonathan Kila",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^2.3.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.20",
+    "objection": "^3.0.1"
+  }
+}
