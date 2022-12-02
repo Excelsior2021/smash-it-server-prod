@@ -1,6 +1,7 @@
 const Groups = require("../models/groupsModel");
 const Users = require("../models/usersModel");
 const Stats = require("../models/statsModel");
+const Counter = require("../models/counterModel");
 
 const getAllGroups = async (_req, res) => {
   try {
@@ -100,6 +101,13 @@ const addNewGroup = async (req, res) => {
       admin: true,
       groupId: newGroup.id,
     });
+
+    const counter = await Counter.query().findById(1);
+
+    await Counter.query().patch({
+      newGroups: counter.newGroups + 1,
+    });
+
     res.status(201).json({ newGroup, newStatRecord });
   } catch (error) {
     console.log(error);

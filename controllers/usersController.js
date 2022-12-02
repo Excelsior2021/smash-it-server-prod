@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Users = require("../models/usersModel");
 const Stats = require("../models/statsModel");
+const Counter = require("../models/counterModel");
 
 const getUsers = async (_req, res) => {
   try {
@@ -117,6 +118,14 @@ const login = async (req, res) => {
 
     delete userData.password;
 
+    const counter = await Counter.query().findById(1);
+
+    await Counter.query().patch({
+      logins: counter.logins + 1,
+    });
+
+    console.log(counter.logins);
+
     res.status(200).json({ ...userData, groups, token });
   } catch (error) {
     console.log(error);
@@ -159,6 +168,13 @@ const createAccount = async (req, res) => {
     ...req.body.formData,
     password: hashedPassword,
   };
+
+  const counter = await Counter.query().findById(1);
+
+  await Counter.query().patch({
+    newAccounts: counter.newAccounts + 1,
+    logins: counter.logins - 1,
+  });
 
   try {
     await Users.query().insert(newUser);
