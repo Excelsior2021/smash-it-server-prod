@@ -124,8 +124,6 @@ const login = async (req, res) => {
       logins: counter.logins + 1,
     });
 
-    console.log(counter.logins);
-
     res.status(200).json({ ...userData, groups, token });
   } catch (error) {
     console.log(error);
