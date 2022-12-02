@@ -78,7 +78,7 @@ const login = async (req, res) => {
 
   const { username, password } = req.body.formData;
 
-  if (!username || password)
+  if (!username || !password)
     return res.status(500).json("login details invalid");
 
   try {

@@ -66,7 +66,8 @@ const getMembers = async (req, res) => {
         "leagues",
         "score",
         "image",
-        "groups_.groupName"
+        "groups_.groupName",
+        "admin"
       );
 
     res.status(200).json(members);

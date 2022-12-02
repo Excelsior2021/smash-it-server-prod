@@ -29,8 +29,8 @@ const updateStats = async (req, res) => {
     !username ||
     !opponentUsername ||
     !groupName ||
-    !userScore ||
-    !opponentScore
+    (!userScore && !username === 0) ||
+    (!opponentScore && !opponentScore === 0)
   )
     return res.status(500).json("stats not provided");
 
@@ -43,11 +43,26 @@ const updateStats = async (req, res) => {
     await Stats.query()
       .findById(userStats.id)
       .patch({
-        wins: userScore > opponentScore ? userStats.wins + 1 : userStats.wins,
+        wins:
+          parseInt(userScore) > parseInt(opponentScore)
+            ? userStats.wins + 1
+            : userStats.wins,
         loses:
-          userScore < opponentScore ? userStats.loses + 1 : userStats.loses,
+          parseInt(userScore) < parseInt(opponentScore)
+            ? userStats.loses + 1
+            : userStats.loses,
         score:
-          userScore > opponentScore ? userStats.score + 10 : userStats.score,
+          parseInt(userScore) > parseInt(opponentScore)
+            ? userStats.score + 10
+            : userStats.score,
+        whitewashes:
+          parseInt(userScore) === 6 && parseInt(opponentScore) === 0
+            ? userStats.whitewashes + 1
+            : userStats.whitewashes,
+        whitewashed:
+          parseInt(userScore) === 0 && parseInt(opponentScore) === 6
+            ? userStats.whitewashed + 1
+            : userStats.whitewashed,
         matches: userStats.matches + 1,
         updated_at: knex.fn.now(),
       });
@@ -61,17 +76,25 @@ const updateStats = async (req, res) => {
       .findById(opponentStats.id)
       .patch({
         wins:
-          opponentScore > userScore
+          parseInt(opponentScore) > parseInt(userScore)
             ? opponentStats.wins + 1
             : opponentStats.wins,
         loses:
-          opponentScore < userScore
+          parseInt(opponentScore) < parseInt(userScore)
             ? opponentStats.loses + 1
             : opponentStats.loses,
         score:
-          opponentScore > userScore
+          parseInt(opponentScore) > parseInt(userScore)
             ? opponentStats.score + 10
             : opponentStats.score,
+        whitewashes:
+          parseInt(opponentScore) === 6 && parseInt(userScore) === 0
+            ? opponentStats.whitewashes + 1
+            : opponentStats.whitewashes,
+        whitewashed:
+          parseInt(opponentScore) === 0 && parseInt(userScore) === 6
+            ? opponentStats.whitewashed + 1
+            : opponentStats.whitewashed,
         matches: opponentStats.matches + 1,
         updated_at: knex.fn.now(),
       });
