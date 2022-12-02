@@ -9,11 +9,15 @@ const getUsers = async (_req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.log(error);
+    res.status(500).json("Internal Server Error");
   }
 };
 
 const getProfileData = async (req, res) => {
   const { username, groupName } = req.params;
+
+  if (!username || !groupName)
+    return res.status(500).json("username and/or groupname not provided");
 
   try {
     const profileData = await Users.query()
@@ -36,14 +40,15 @@ const getProfileData = async (req, res) => {
     res.status(200).json({ ...profileData, ...statsData });
   } catch (error) {
     console.log(error);
+    res.status(500).json("Internal Server Error");
   }
 };
 
 const authenticate = async (req, res) => {
-  try {
-    if (!req.headers.authorization)
-      return res.status(401).send("Authentication required");
+  if (!req.headers.authorization)
+    return res.status(401).send("Authentication required");
 
+  try {
     const token = req.headers.authorization;
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
@@ -64,11 +69,18 @@ const authenticate = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json("Internal Server Error");
   }
 };
 
 const login = async (req, res) => {
+  if (!req.body.formData) return res.status(500).json("No form data recieved");
+
   const { username, password } = req.body.formData;
+
+  if (!username || password)
+    return res.status(500).json("login details invalid");
+
   try {
     const userData = await Users.query()
       .first()
@@ -108,12 +120,20 @@ const login = async (req, res) => {
     res.status(200).json({ ...userData, groups, token });
   } catch (error) {
     console.log(error);
+    res.status(500).json("Internal Server Error");
   }
 };
 
 const createAccount = async (req, res) => {
+  if (!req.body.formData) return res.status(500).json("No form data recieved");
+
   const { firstName, lastName, dob, email, username, password, passwordCheck } =
     req.body.formData;
+
+  if (
+    (!firstName, !lastName, !dob, !email, !username, !password, !passwordCheck)
+  )
+    return res.status(500).json("form data invalid");
 
   if (
     !firstName ||
@@ -124,7 +144,7 @@ const createAccount = async (req, res) => {
     !password ||
     !passwordCheck
   ) {
-    return res.status(400).send("Invalid field(s");
+    return res.status(400).send("Invalid field(s)");
   }
 
   if (password !== passwordCheck) {
@@ -144,7 +164,10 @@ const createAccount = async (req, res) => {
     await Users.query().insert(newUser);
     delete newUser.password;
     res.status(201).json(newUser);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Internal Server Error");
+  }
 };
 
 module.exports = {

@@ -5,9 +5,9 @@ router.get("/", controller.getAllGroups);
 
 router.get("/:username", controller.getUserGroups);
 
-router.get("/:group", controller.getGroup);
+router.get("/:groupName", controller.getGroup);
 
-router.get("/members/:group", controller.getMembers);
+router.get("/members/:groupName", controller.getMembers);
 
 router.post("/new", controller.addNewGroup);
 
