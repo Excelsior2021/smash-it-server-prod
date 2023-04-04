@@ -87,6 +87,8 @@ const login = async (req, res) => {
       .first()
       .where("users.username", username);
 
+    if (!userData) return res.status(204).json(null);
+
     const checkPasswordStandard = password === userData.password;
 
     const checkPasswordBycrypt = bcrypt.compareSync(

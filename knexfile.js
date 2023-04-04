@@ -12,12 +12,12 @@ const development = {
     database: "smashit",
     charset: "utf8",
   },
-};
+}
 
 const production = {
   client: "mysql",
   connection:
-    "mysql://root:q8vJtW8Oa8i7CSvjlRlV@containers-us-west-99.railway.app:5638/railway",
-};
+    "mysql://root:H73InB2okm1h17qW888B@containers-us-west-99.railway.app:5638/railway",
+}
 
-module.exports = production;
+module.exports = production
